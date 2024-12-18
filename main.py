@@ -1,8 +1,6 @@
 import random
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
-from sympy import isprime
-
 
 class RSA:
     def __init__(self):
@@ -16,8 +14,22 @@ class RSA:
     def generateNumber(self):
         while True:
             num = random.randint(100, 1000)
-            if isprime(num):
+            if self.prime(num):
                 return num
+
+    def prime(self, num):
+        if num <= 1:
+            return False
+        if num <= 3:
+            return True
+        if num % 2 == 0 or num % 3 == 0:
+            return False
+        i = 5
+        while i * i <= num:
+            if num % i == 0 or num % (i + 2) == 0:
+                return False
+            i += 6
+        return True
 
     def e(self, phi):
         e = 3
@@ -45,7 +57,10 @@ class RSA:
         return x1
 
     def encrypt(self, plaintext):
-        return [pow(ord(char), self.e, self.n) for char in plaintext]
+        ciphertext = []
+        for char in plaintext:
+            ciphertext.append(pow(ord(char), self.e, self.n))
+        return ciphertext
 
     def decrypt(self, ciphertext):
         return ''.join(chr(pow(char, self.d, self.n)) for char in ciphertext)
